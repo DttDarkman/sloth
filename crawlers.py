@@ -33,7 +33,6 @@ def dub_anime_dic():
     return animes
 
 
-# TODO Get this to work AttributeError: 'NavigableString' object has no attribute 'find_all'
 # Crawls watchcartoononline's movie list, returns title(key) and link(value) as dictionary
 def movie_dic():
     movies = {}
@@ -41,17 +40,12 @@ def movie_dic():
     plain_text = html_code.text
     soup = BeautifulSoup(plain_text, 'html5lib')
     for lon_link in soup.find('div', {'class': 'ddmcc'}):
-        link = lon_link.text
-        lk = link.get('href')
-        print(lk)
-
-        # link = lon_link.find_all('a')
-        # print(link)
-        # for href in link:
-        #     hrlink = href.get('href')
-        #     title = href.string
-        #     if hrlink is not None:
-        #         movies[str(title)] = str(hrlink)
+        link = lon_link.findAllNext('a')
+        for href in link:
+            hrlink = href.get('href')
+            title = href.string
+            if hrlink is not None:
+                movies[str(title)] = str(hrlink)
     return movies
 
 
