@@ -2,7 +2,7 @@
 author: DTT_Darkman
 date started: Dec. 3, 2018
 """
-
+from selenium import webdriver
 import requests
 from bs4 import BeautifulSoup
 ''' 
@@ -19,9 +19,9 @@ from bs4 import BeautifulSoup
 # Crawls watchcartoononline's dub anime list, returns title(key) and link(value) as dictionary
 def dub_anime_dic():
     animes = {}
-    html_code = requests.get('https://www.watchcartoononline.com/dubbed-anime-list')
-    plain_text = html_code.text
-    soup = BeautifulSoup(plain_text, 'html.parser')
+    html = requests.get('https://www.thewatchcartoononline.tv/dubbed-anime-list')
+    plain_text = html.text
+    soup = BeautifulSoup(plain_text, 'html5lib')
     for lon_link in soup.find('div', {'class': 'ddmcc'}):
         print(lon_link)
         link = lon_link.find_all('a')
@@ -36,8 +36,8 @@ def dub_anime_dic():
 # Crawls watchcartoononline's movie list, returns title(key) and link(value) as dictionary
 def movie_dic():
     movies = {}
-    html_code = requests.get('https://www.watchcartoononline.com/movie-list')
-    plain_text = html_code.text
+    html = requests.get('https://www.thewatchcartoononline.tv/movie-list')
+    plain_text = html.text
     soup = BeautifulSoup(plain_text, 'html5lib')
     for lon_link in soup.find('div', {'class': 'ddmcc'}):
         link = lon_link.findAllNext('a')
@@ -52,9 +52,9 @@ def movie_dic():
 # Crawls watchcartoononline's subbed anime list, returns title(key) and link(value) as dictionary
 def sub_anime_dic():
     sub_animes = {}
-    html_code = requests.get('https://www.watchcartoononline.com/subbed-anime-list')
-    plain_text = html_code.text
-    soup = BeautifulSoup(plain_text, 'html.parser')
+    html = requests.get('https://www.thewatchcartoononline.tv/subbed-anime-list')
+    plain_text = html.text
+    soup = BeautifulSoup(plain_text, 'html5lib')
     for lon_link in soup.find('div', {'class': 'ddmcc'}):
         link = lon_link.find_all('a')
         for href in link:
@@ -68,9 +68,9 @@ def sub_anime_dic():
 # Crawls watchcartoononline's cartoon list, returns title(key) and link(value) as dictionary
 def cartoon_dic():
     cartoons = {}
-    html_code = requests.get('https://www.watchcartoononline.com/cartoon-list')
-    plain_text = html_code.text
-    soup = BeautifulSoup(plain_text, 'html.parser')
+    html = requests.get('https://www.thewatchcartoononline.tv/cartoon-list')
+    plain_text = html.text
+    soup = BeautifulSoup(plain_text, 'html5lib')
     for lon_link in soup.find('div', {'class': 'ddmcc'}):
         link = lon_link.find_all('a')
         for href in link:
@@ -111,13 +111,43 @@ def dic_2_list(dic):
     return titles
 
 
+# TODO need to make browser headless and add a total wait timer, also needs threading
 def source_finder(url):
-    pass
+    browser = webdriver.Chrome()
+    browser.get(url)
+    soup = BeautifulSoup(browser.page_source, "html5lib")
+    browser.close()
+    frame = soup.find("iframe", {"rel": "nofollow"})
+    frame_src = frame.get("src")
+    frame_url = "https://www.thewatchcartoononline.tv" + frame_src
+    html = requests.get(frame_url)
+    plain_text = html.text
+    soup = BeautifulSoup(plain_text, 'html5lib')
+    source = soup.find("source")
+    link = source.get("src")
+    print(link)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 anime = movie_dic()
-print(anime)
+keys = dic_2_list(anime)
+key = search(keys, 'lilo & stitch')
+print(key)
+source_finder(anime[key])
+
 
 
 # titles = dic_2_list(anime)
