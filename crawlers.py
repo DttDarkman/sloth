@@ -3,8 +3,10 @@ author: DTT_Darkman
 date started: Dec. 3, 2018
 """
 from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
 import requests
 from bs4 import BeautifulSoup
+
 ''' 
        *******Needed functions******** 
 **"web_crawlers": crawler watchcartoononline for each category "movies", "dubbed anime" and so on...
@@ -111,32 +113,39 @@ def dic_2_list(dic):
     return titles
 
 
-# TODO need to make browser headless and add a total wait timer, also needs threading
+# TODO needs threading
 def source_finder(url):
-    browser = webdriver.Chrome()
-    browser.get(url)
-    soup = BeautifulSoup(browser.page_source, "html5lib")
-    browser.close()
+    # Creating headless firefox browser
+    ops = Options()
+    ops.add_argument("--headless")
+    pro = webdriver.FirefoxProfile()
+    driver = webdriver.Firefox(
+        firefox_profile=pro,
+        options=ops,
+        executable_path="geckodriver.exe",
+        firefox_binary="FirefoxPortable32\App\Firefox\\firefox.exe"
+    )
+    driver.implicitly_wait(10)
+
+    # Getting page html source from url
+    driver.get(url)
+    soup = BeautifulSoup(driver.page_source, "html5lib")
+    driver.quit()
+    print("Got soup, dinner time!")
+
+    # Searching for "iframe" tag source link
     frame = soup.find("iframe", {"rel": "nofollow"})
     frame_src = frame.get("src")
     frame_url = "https://www.thewatchcartoononline.tv" + frame_src
+
+    # Getting html from the iframe source link and getting video source link
     html = requests.get(frame_url)
     plain_text = html.text
     soup = BeautifulSoup(plain_text, 'html5lib')
     source = soup.find("source")
     link = source.get("src")
     print(link)
-
-
-
-
-
-
-
-
-
-
-
+    return link
 
 
 
@@ -144,14 +153,6 @@ def source_finder(url):
 
 anime = movie_dic()
 keys = dic_2_list(anime)
-key = search(keys, 'lilo & stitch')
+key = search(keys, "a bug's life")
 print(key)
 source_finder(anime[key])
-
-
-
-# titles = dic_2_list(anime)
-# found = search(titles, "summer wars")
-# print(found)
-# found_link = anime[found]
-# print(found_link)

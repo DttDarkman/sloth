@@ -1,2 +1,4 @@
 .idea
 .txt
+geckodriver.log
+test.py
