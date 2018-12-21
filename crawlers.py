@@ -2,6 +2,7 @@
 author: DTT_Darkman
 date started: Dec. 3, 2018
 """
+from time import time
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 import requests
@@ -10,22 +11,21 @@ from bs4 import BeautifulSoup
 ''' 
        *******Needed functions******** 
 **"web_crawlers": crawler watchcartoononline for each category "movies", "dubbed anime" and so on...
-"anime_search": searches for keyword (anime title) in a list of links and returns all that apply 
-"movie_search": searches for keyword (movie title) in a list of links and returns all that apply
-"source_finder": finds video source link and returns it
-"grab_episodes": gets episodes source link(value) and title(key) and return them as dictionary
+**"anime_search": searches for keyword (anime title) in a list of links and returns all that apply 
+**"movie_search": searches for keyword (movie title) in a list of links and returns all that apply
+**"source_finder": finds video source link and returns it
+**"grab_episodes": gets episodes source link(value) and title(key) and return them as dictionary
 
 '''
 
 
 # Crawls watchcartoononline's dub anime list, returns title(key) and link(value) as dictionary
-def dub_anime_dic():
+def dub_anime_crawl():
     animes = {}
     html = requests.get('https://www.thewatchcartoononline.tv/dubbed-anime-list')
     plain_text = html.text
     soup = BeautifulSoup(plain_text, 'html5lib')
     for lon_link in soup.find('div', {'class': 'ddmcc'}):
-        print(lon_link)
         link = lon_link.find_all('a')
         for href in link:
             hrlink = href.get('href')
@@ -36,7 +36,7 @@ def dub_anime_dic():
 
 
 # Crawls watchcartoononline's movie list, returns title(key) and link(value) as dictionary
-def movie_dic():
+def movie_crawl():
     movies = {}
     html = requests.get('https://www.thewatchcartoononline.tv/movie-list')
     plain_text = html.text
@@ -52,7 +52,7 @@ def movie_dic():
 
 
 # Crawls watchcartoononline's subbed anime list, returns title(key) and link(value) as dictionary
-def sub_anime_dic():
+def sub_anime_crawl():
     sub_animes = {}
     html = requests.get('https://www.thewatchcartoononline.tv/subbed-anime-list')
     plain_text = html.text
@@ -68,7 +68,7 @@ def sub_anime_dic():
 
 
 # Crawls watchcartoononline's cartoon list, returns title(key) and link(value) as dictionary
-def cartoon_dic():
+def cartoon_crawl():
     cartoons = {}
     html = requests.get('https://www.thewatchcartoononline.tv/cartoon-list')
     plain_text = html.text
@@ -148,22 +148,29 @@ def source_finder(url):
     return link
 
 
-def eps_naper(showURL):
-	episodes = {}
-	html = requests.get(showURL)
-	plain_text = html.text
-	soup = BeautifulSoup(plain_text, 'html5lib')
-	for link in soup.findAll("div", {"class": "cat-eps"}):
-		title = link.get("title")
-		href = link.get("href")
-		episodes[str(title)] = str(href)
-	return episodes
-		
-		
+# Crawls show url for the link of each episode, returns episode title(key) and episode link(value) as dictionary
+def eps_napper(url):
+    episodes = {}
+    html = requests.get(url)
+    plain_text = html.text
+    soup = BeautifulSoup(plain_text, 'html5lib')
+    for ep in soup.find_all("a", {"class": "sonra"}):
+        title = ep.get("title")
+        href = ep.get("href")
+        episodes[str(title)] = str(href)
+    return episodes
 
 
-anime = movie_dic()
+start = time()
+
+anime = dub_anime_crawl()
 keys = dic_2_list(anime)
-key = search(keys, "a bug's life")
-print(key)
-source_finder(anime[key])
+key = search(keys, "trigun")
+episodes = eps_napper(anime[key])
+
+stop = time()
+fintime = round(stop - start, 3)
+
+print(episodes)
+print("Process finished in: {} Seconds.".format(fintime))
+
