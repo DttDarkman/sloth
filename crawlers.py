@@ -148,11 +148,18 @@ def source_finder(url):
     return link
 
 
-def episode_graber(showURL):
+def eps_naper(showURL):
+	episodes = {}
 	html = requests.get(showURL)
 	plain_text = html.text
 	soup = BeautifulSoup(plain_text, 'html5lib')
-	
+	for link in soup.findAll("div", {"class": "cat-eps"}):
+		title = link.get("title")
+		href = link.get("href")
+		episodes[str(title)] = str(href)
+	return episodes
+		
+		
 
 
 anime = movie_dic()
