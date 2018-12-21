@@ -148,7 +148,11 @@ def source_finder(url):
     return link
 
 
-
+def episode_graber(showURL):
+	html = requests.get(showURL)
+	plain_text = html.text
+	soup = BeautifulSoup(plain_text, 'html5lib')
+	
 
 
 anime = movie_dic()
