@@ -2,7 +2,6 @@
 author: DTT_Darkman
 date started: Dec. 3, 2018
 """
-from time import time
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 import requests
@@ -83,36 +82,6 @@ def cartoon_crawl():
     return cartoons
 
 
-# Takes a list and a title(criteria) and finds matching title in list and returns the key for link
-def search(title_list, criteria):
-    index = -1
-    found = False
-    # making all chars lowercase for criteria
-    low_title_list = []
-    low_criteria = criteria.lower()
-    # making all chars lowercase for titles in list
-    for title in title_list:
-        low_title = title.lower()
-        low_title_list.append(low_title)
-    # Searching...
-    for title in low_title_list:
-        index += 1
-        if title == low_criteria:
-            found = True
-            results = title_list[int(index)]
-    if found is False:
-        results = "Could Not Find {}. Sorry try again.".format(criteria)
-    return results
-
-
-# Takes dictionary and returns list of keys
-def dic_2_list(dic):
-    titles = []
-    for key in dic:
-        titles.append(key)
-    return titles
-
-
 # TODO needs threading
 def source_finder(url):
     # Creating headless firefox browser
@@ -159,18 +128,3 @@ def eps_napper(url):
         href = ep.get("href")
         episodes[str(title)] = str(href)
     return episodes
-
-
-start = time()
-
-anime = dub_anime_crawl()
-keys = dic_2_list(anime)
-key = search(keys, "trigun")
-episodes = eps_napper(anime[key])
-
-stop = time()
-fintime = round(stop - start, 3)
-
-print(episodes)
-print("Process finished in: {} Seconds.".format(fintime))
-
