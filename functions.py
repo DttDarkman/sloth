@@ -16,6 +16,11 @@ def startup():
     cartoons = cartoon_crawl()
 
 
+def movie_get():
+    global movies
+    movies = movie_crawl()
+
+
 # Returns list sorted by relevance
 def relevance_sort(keyword, lis):
     results = sorted(lis, key=lambda z: difflib.SequenceMatcher(None, z, str(keyword)).ratio(), reverse=True)
