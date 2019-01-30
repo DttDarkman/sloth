@@ -2,10 +2,11 @@ from tkinter import *
 from tkinter.ttk import *
 from functions import *
 
+### ------ !!!FOR TESTING ONLY!!! ------ ###
 movie_get()
 matches = search_movies("summer")
 results = relevance_sort("summer", matches)
-
+### ------ !!!FOR TESTING ONLY!!! ------ ###
 
 # Main window config
 root = Tk()
@@ -21,15 +22,15 @@ s.configure('TButton', background="gray30", foreground="DodgerBlue3")
 s.map('TButton', foreground=[('pressed', 'OrangeRed4')])
 s.configure('TFrame', background="gray30")
 
-
 # Search bar
 search_bar = Frame(root)
 search_bar.grid(row=0, columnspan=4, sticky=W)
 criteria = Entry(search_bar, width=50)
 criteria.grid(row=0, sticky=W, padx=3)
+# TODO make and assign command to search button
+Button(search_bar, text="Search").grid(row=0, sticky=W, column=5)
 
-
-# TODO Add command to these
+# TODO make and assign commands to radiobuttons
 # Frame ser_type
 ser_type = Frame(root)
 ser_type.grid(row=1, sticky=W)
@@ -44,11 +45,15 @@ dub_ser.grid(row=0, sticky=W, column=1)
 sub_ser.grid(row=0, sticky=W, column=2)
 mov_ser.grid(row=0, sticky=W, column=3)
 car_ser.grid(row=0, sticky=W, column=4)
-
+all_ser.invoke()
 
 # Listboxes
+# TODO add scroll bars to listboxs
 boxes = Frame(root)
-boxes.grid(row=2, sticky=W)
+boxes.grid(row=2, sticky=N + W + E)
+# TODO get resizing working
+boxes.rowconfigure(0, weight=1)
+boxes.columnconfigure(0, weight=1)
 resultsbox = Listbox(boxes, width=75, height=15, bd=3,
                      bg="gray20", fg="SlateGray3",
                      activestyle="none",
@@ -69,7 +74,8 @@ queue.grid(row=1, column=7, columnspan=4, sticky=W)
 
 controls = Frame(boxes)
 controls.grid(row=1, column=6, sticky=W)
-Button(controls, text="Remove").grid(row=2, padx=3)
+# TODO make and assign commands to add/remove buttons
 Button(controls, text="Add").grid(row=1, padx=3)
+Button(controls, text="Remove").grid(row=2, padx=3)
 
 root.mainloop()
