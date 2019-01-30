@@ -16,9 +16,11 @@ def startup():
     cartoons = cartoon_crawl()
 
 
+### ------ !!!FOR TESTING ONLY!!! ------ ###
 def movie_get():
     global movies
     movies = movie_crawl()
+### ------ !!!FOR TESTING ONLY!!! ------ ###
 
 
 # Returns list sorted by relevance
