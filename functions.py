@@ -10,22 +10,24 @@ dub_sear = False
 sub_sear = False
 mov_sear = False
 cart_sear = False
-results = []
 
 
-def search_type(typ=None):
+def search_type(typ):
     global dub_sear, sub_sear, mov_sear, cart_sear
-    dub_sear = False
-    sub_sear = False
-    mov_sear = False
-    cart_sear = False
-    if typ == "dubbed":
+    if typ == 1:
+        dub_sear = False
+        sub_sear = False
+        mov_sear = False
+        cart_sear = False
+    if typ == 2:
         dub_sear = True
-    if typ == "subbed":
+    if typ == 3:
         sub_sear = True
-    if typ == "movie":
+    if typ == 4:
+        print("movie selected")
         mov_sear = True
-    if typ == "cartoon":
+        print("set")
+    if typ == 5:
         cart_sear = True
 
 
@@ -55,7 +57,6 @@ def relevance_sort(keyword, lis):
 def search(title_list, criteria):
     index = -1
     results = []
-    low_results = []
     # making all chars lowercase for criter
     low_title_list = []
     low_criteria = criteria.lower()

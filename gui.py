@@ -3,11 +3,11 @@ from tkinter.ttk import *
 from functions import *
 
 ### ------ !!!FOR TESTING ONLY!!! ------ ###
-# movie_get()
+movie_get()
 # matches = search_movies("summer")
 # results = relevance_sort("summer", matches)
 ### ------ !!!FOR TESTING ONLY!!! ------ ###
-
+results = []
 
 # Main window config
 root = Tk()
@@ -29,25 +29,27 @@ search_bar.grid(row=0, columnspan=4, sticky=W)
 searchbox = Entry(search_bar, width=50)
 searchbox.focus_set()
 searchbox.grid(row=0, sticky=W, padx=3)
-# TODO make and assign command to search button
 
 
 # Functions
 def search_check():
+    global results
     criteria = searchbox.get()
-    print(searchbox.get())
+    # makes it here
     print(criteria)
     if dub_sear:
-        search_dub(criteria)
+        results = search_dub(criteria)
     if sub_sear:
-        search_sub(criteria)
+        results = search_sub(criteria)
     if mov_sear:
-        search_movies(criteria)
-        print("searchin mov for" + criteria)
+        # not making it here
+        print("searching mov for" + criteria)
+        results = search_movies(criteria)
+        print(results)
     if cart_sear:
-        search_carts(criteria)
+        results = search_carts(criteria)
     else:
-        search_all(criteria)
+        results = search_all(criteria)
 
 
 Button(search_bar, command=search_check, text="Search").grid(row=0, sticky=W, column=5)
@@ -56,11 +58,11 @@ Button(search_bar, command=search_check, text="Search").grid(row=0, sticky=W, co
 # Frame ser_type
 ser_type = Frame(root)
 ser_type.grid(row=1, sticky=W)
-all_ser = Radiobutton(ser_type, command=search_type(), text="All The Things!", value=1)
-dub_ser = Radiobutton(ser_type, command=search_type("dubbed"), text="Dubbed Anime", value=2)
-sub_ser = Radiobutton(ser_type, command=search_type("subbed"), text="Subbed Anime", value=3)
-mov_ser = Radiobutton(ser_type, command=search_type("movie"), text="Movies", value=4)
-car_ser = Radiobutton(ser_type, command=search_type("cartoon"), text="Cartoons", value=5)
+all_ser = Radiobutton(ser_type, command=lambda: search_type(1), text="All The Things!", value=1)
+dub_ser = Radiobutton(ser_type, command=lambda: search_type(2), text="Dubbed Anime", value=2)
+sub_ser = Radiobutton(ser_type, command=lambda: search_type(3), text="Subbed Anime", value=3)
+mov_ser = Radiobutton(ser_type, command=lambda: search_type(4), text="Movies", value=4)
+car_ser = Radiobutton(ser_type, command=lambda: search_type(5), text="Cartoons", value=5)
 
 all_ser.grid(row=0, sticky=W, column=0)
 dub_ser.grid(row=0, sticky=W, column=1)
