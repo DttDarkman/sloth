@@ -1,10 +1,32 @@
 from crawlers import *
 import difflib
 
+
 dubbed = {}
 subbed = {}
 movies = {}
 cartoons = {}
+dub_sear = False
+sub_sear = False
+mov_sear = False
+cart_sear = False
+results = []
+
+
+def search_type(typ=None):
+    global dub_sear, sub_sear, mov_sear, cart_sear
+    dub_sear = False
+    sub_sear = False
+    mov_sear = False
+    cart_sear = False
+    if typ == "dubbed":
+        dub_sear = True
+    if typ == "subbed":
+        sub_sear = True
+    if typ == "movie":
+        mov_sear = True
+    if typ == "cartoon":
+        cart_sear = True
 
 
 # Crawls all categories and returns them to global dictionaries
@@ -29,12 +51,12 @@ def relevance_sort(keyword, lis):
     return results
 
 
-# Takes a list and a title(criteria) and finds matching title in list and returns the keys for links in a list
+# Takes a list and a title(criter) and finds matching title in list and returns the keys for links in a list
 def search(title_list, criteria):
     index = -1
     results = []
     low_results = []
-    # making all chars lowercase for criteria
+    # making all chars lowercase for criter
     low_title_list = []
     low_criteria = criteria.lower()
     # making all chars lowercase for titles in list
@@ -97,5 +119,25 @@ def search_all(criteria):
     search_list.extend(search_sub(criteria))
     search_list.extend(search_movies(criteria))
     return results
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
