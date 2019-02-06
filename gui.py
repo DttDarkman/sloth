@@ -1,9 +1,10 @@
 from tkinter import *
 from tkinter.ttk import *
 from functions import *
+import functions
 
 ### ------ !!!FOR TESTING ONLY!!! ------ ###
-movie_get()
+startup()
 # matches = search_movies("summer")
 # results = relevance_sort("summer", matches)
 ### ------ !!!FOR TESTING ONLY!!! ------ ###
@@ -30,26 +31,54 @@ searchbox = Entry(search_bar, width=50)
 searchbox.focus_set()
 searchbox.grid(row=0, sticky=W, padx=3)
 
+# Listboxes
+# TODO add scroll bars to listboxs
+boxes = Frame(root)
+boxes.grid(row=2, sticky=N + W + E)
+# TODO get resizing working
+boxes.rowconfigure(0, weight=1)
+boxes.columnconfigure(0, weight=1)
+resultsbox = Listbox(boxes, width=75, height=15, bd=3,
+                     bg="gray20", fg="SlateGray3",
+                     activestyle="none",
+                     selectforeground="OrangeRed4",
+                     selectbackground="DodgerBlue3",
+                     selectmode=SINGLE)
+resultsbox.grid(row=1, columnspan=4, sticky=W)
+
+queue = Listbox(boxes, width=75, height=15, bd=3,
+                bg="gray20", fg="SlateGray3",
+                activestyle="none",
+                selectforeground="OrangeRed4",
+                selectbackground="DodgerBlue3",
+                selectmode=SINGLE)
+queue.grid(row=1, column=7, columnspan=4, sticky=W)
+
 
 # Functions
 def search_check():
     global results
     criteria = searchbox.get()
-    # makes it here
     print(criteria)
-    if dub_sear:
+    if functions.all_sear:
+        results = search_all(criteria)
+        print(results)
+    if functions.dub_sear:
         results = search_dub(criteria)
-    if sub_sear:
+        print(results)
+    if functions.sub_sear:
         results = search_sub(criteria)
-    if mov_sear:
-        # not making it here
-        print("searching mov for" + criteria)
+        print(results)
+    if functions.mov_sear:
+        print("searching mov for " + criteria)
         results = search_movies(criteria)
         print(results)
-    if cart_sear:
+    if functions.cart_sear:
         results = search_carts(criteria)
-    else:
-        results = search_all(criteria)
+        print(results)
+    resultsbox.delete(0, 100)
+    for item in results:
+        resultsbox.insert(END, item)
 
 
 Button(search_bar, command=search_check, text="Search").grid(row=0, sticky=W, column=5)
@@ -70,31 +99,6 @@ sub_ser.grid(row=0, sticky=W, column=2)
 mov_ser.grid(row=0, sticky=W, column=3)
 car_ser.grid(row=0, sticky=W, column=4)
 all_ser.invoke()
-
-# Listboxes
-# TODO add scroll bars to listboxs
-boxes = Frame(root)
-boxes.grid(row=2, sticky=N + W + E)
-# TODO get resizing working
-boxes.rowconfigure(0, weight=1)
-boxes.columnconfigure(0, weight=1)
-resultsbox = Listbox(boxes, width=75, height=15, bd=3,
-                     bg="gray20", fg="SlateGray3",
-                     activestyle="none",
-                     selectforeground="OrangeRed4",
-                     selectbackground="DodgerBlue3",
-                     selectmode=SINGLE)
-for item in results:
-        resultsbox.insert(END, item)
-resultsbox.grid(row=1, columnspan=4, sticky=W)
-
-queue = Listbox(boxes, width=75, height=15, bd=3,
-                bg="gray20", fg="SlateGray3",
-                activestyle="none",
-                selectforeground="OrangeRed4",
-                selectbackground="DodgerBlue3",
-                selectmode=SINGLE)
-queue.grid(row=1, column=7, columnspan=4, sticky=W)
 
 controls = Frame(boxes)
 controls.grid(row=1, column=6, sticky=W)

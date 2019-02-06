@@ -6,6 +6,7 @@ dubbed = {}
 subbed = {}
 movies = {}
 cartoons = {}
+all_sear = False
 dub_sear = False
 sub_sear = False
 mov_sear = False
@@ -13,20 +14,20 @@ cart_sear = False
 
 
 def search_type(typ):
-    global dub_sear, sub_sear, mov_sear, cart_sear
+    global all_sear, dub_sear, sub_sear, mov_sear, cart_sear
+    all_sear = False
+    dub_sear = False
+    sub_sear = False
+    mov_sear = False
+    cart_sear = False
     if typ == 1:
-        dub_sear = False
-        sub_sear = False
-        mov_sear = False
-        cart_sear = False
+        all_sear = True
     if typ == 2:
         dub_sear = True
     if typ == 3:
         sub_sear = True
     if typ == 4:
-        print("movie selected")
         mov_sear = True
-        print("set")
     if typ == 5:
         cart_sear = True
 
@@ -114,11 +115,10 @@ def search_carts(criteria):
 # Searches thur all categories
 def search_all(criteria):
     results = []
-    search_list = []
-    search_list.extend(search_carts(criteria))
-    search_list.extend(search_dub(criteria))
-    search_list.extend(search_sub(criteria))
-    search_list.extend(search_movies(criteria))
+    results.extend(search_carts(criteria))
+    results.extend(search_dub(criteria))
+    results.extend(search_sub(criteria))
+    results.extend(search_movies(criteria))
     return results
 
 
