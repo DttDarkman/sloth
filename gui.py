@@ -39,12 +39,15 @@ boxes.grid(row=2, sticky=N + W + E)
 boxes.rowconfigure(0, weight=1)
 boxes.columnconfigure(0, weight=1)
 resultsbox = Listbox(boxes, width=75, height=15, bd=3,
-                     bg="gray20", fg="SlateGray3",
-                     activestyle="none",
-                     selectforeground="OrangeRed4",
-                     selectbackground="DodgerBlue3",
-                     selectmode=SINGLE)
+                    bg="gray20", fg="SlateGray3",
+                    activestyle="none",
+                    selectforeground="OrangeRed4",
+                    selectbackground="DodgerBlue3",
+                    selectmode=SINGLE)
 resultsbox.grid(row=1, columnspan=4, sticky=W)
+scrollbar = Scrollbar(boxes, orient="vertical")
+scrollbar.config(command=resultsbox.yview())
+scrollbar.grid(row=1, rowspan=4, column=5, sticky=W)
 
 queue = Listbox(boxes, width=75, height=15, bd=3,
                 bg="gray20", fg="SlateGray3",
@@ -59,23 +62,16 @@ queue.grid(row=1, column=7, columnspan=4, sticky=W)
 def search_check():
     global results
     criteria = searchbox.get()
-    print(criteria)
     if functions.all_sear:
         results = search_all(criteria)
-        print(results)
     if functions.dub_sear:
         results = search_dub(criteria)
-        print(results)
     if functions.sub_sear:
         results = search_sub(criteria)
-        print(results)
     if functions.mov_sear:
-        print("searching mov for " + criteria)
         results = search_movies(criteria)
-        print(results)
     if functions.cart_sear:
         results = search_carts(criteria)
-        print(results)
     resultsbox.delete(0, 100)
     for item in results:
         resultsbox.insert(END, item)
@@ -83,7 +79,6 @@ def search_check():
 
 Button(search_bar, command=search_check, text="Search").grid(row=0, sticky=W, column=5)
 
-# TODO make and assign commands to radiobuttons
 # Frame ser_type
 ser_type = Frame(root)
 ser_type.grid(row=1, sticky=W)

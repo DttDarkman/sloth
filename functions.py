@@ -6,6 +6,7 @@ dubbed = {}
 subbed = {}
 movies = {}
 cartoons = {}
+category = ""
 all_sear = False
 dub_sear = False
 sub_sear = False
@@ -71,7 +72,7 @@ def search(title_list, criteria):
         if title.find(low_criteria) != -1:
             results.append(title_list[int(index)])
     if len(results) <= 0:
-        nullAlert = "Sorry could not find {}".format(criteria)
+        nullAlert = "Sorry could not find {} in {}.".format(criteria, category)
         results.append(nullAlert)
     return results
 
@@ -86,6 +87,8 @@ def dic_2_list(dic):
 
 # Searches thur dubbed anime category
 def search_dub(criteria):
+    global category
+    category = "dubbed anime"
     search_list = dic_2_list(dubbed)
     results = search(search_list, criteria)
     return results
@@ -93,6 +96,8 @@ def search_dub(criteria):
 
 # Searches thur subbed anime category
 def search_sub(criteria):
+    global category
+    category = "subbed anime"
     search_list = dic_2_list(subbed)
     results = search(search_list, criteria)
     return results
@@ -100,6 +105,8 @@ def search_sub(criteria):
 
 # Searches thur movies category
 def search_movies(criteria):
+    global category
+    category = "movies"
     search_list = dic_2_list(movies)
     results = search(search_list, criteria)
     return results
@@ -107,6 +114,8 @@ def search_movies(criteria):
 
 # Searches thur cartoons categories
 def search_carts(criteria):
+    global category
+    category = "cartoons"
     search_list = dic_2_list(cartoons)
     results = search(search_list, criteria)
     return results
