@@ -9,11 +9,12 @@ startup()
 # results = relevance_sort("summer", matches)
 ### ------ !!!FOR TESTING ONLY!!! ------ ###
 results = []
+queue = []
 
 # Main window config
 root = Tk()
 root.config(bg="gray30")
-root.geometry("1000x600")
+root.geometry("1035x600")
 root.title("Sloth")
 # root.iconbitmap("wco_icon.ico")
 
@@ -38,24 +39,38 @@ boxes.grid(row=2, sticky=N + W + E)
 # TODO get resizing working
 boxes.rowconfigure(0, weight=1)
 boxes.columnconfigure(0, weight=1)
-resultsbox = Listbox(boxes, width=75, height=15, bd=3,
+
+# Resultsbox Frame
+results_frame = Frame(boxes)
+results_frame.grid(row=1, column=1, sticky=N + W + E)
+
+scrollbar_result = Scrollbar(results_frame, orient="vertical")
+resultsbox = Listbox(results_frame, width=75, height=15, bd=3,
                     bg="gray20", fg="SlateGray3",
                     activestyle="none",
                     selectforeground="OrangeRed4",
                     selectbackground="DodgerBlue3",
                     selectmode=SINGLE)
-resultsbox.grid(row=1, columnspan=4, sticky=W)
-scrollbar = Scrollbar(boxes, orient="vertical")
-scrollbar.config(command=resultsbox.yview())
-scrollbar.grid(row=1, rowspan=4, column=5, sticky=W)
+resultsbox.grid(row=1, columnspan=1, sticky=W)
+scrollbar_result.config(command=resultsbox.yview)
+scrollbar_result.grid(row=1, column=2, sticky=W, ipady=99)
 
-queue = Listbox(boxes, width=75, height=15, bd=3,
+
+
+# Queuebox Frame
+queue_frame = Frame(boxes)
+queue_frame.grid(row=1, column=3, sticky=N + W + E)
+
+scrollbar_queue = Scrollbar(queue_frame, orient="vertical")
+queuebox = Listbox(queue_frame, width=75, height=15, bd=3,
                 bg="gray20", fg="SlateGray3",
                 activestyle="none",
                 selectforeground="OrangeRed4",
                 selectbackground="DodgerBlue3",
                 selectmode=SINGLE)
-queue.grid(row=1, column=7, columnspan=4, sticky=W)
+queuebox.grid(row=1, column=1, columnspan=1, sticky=W)
+scrollbar_queue.config(command=queuebox.yview)
+scrollbar_queue.grid(row=1, column=2, sticky=W, ipady=99)
 
 
 # Functions
@@ -72,11 +87,37 @@ def search_check():
         results = search_movies(criteria)
     if functions.cart_sear:
         results = search_carts(criteria)
-    resultsbox.delete(0, 100)
+    resultsbox.delete(0, END)
     for item in results:
         resultsbox.insert(END, item)
 
+def add2queue():
+    global queue
+    selected = resultsbox.selection_get()
+    queue.append(selected)
+    queuebox.insert(END, selected)
 
+def remove_from_q():
+    global queue
+    dex = queuebox.curselection()
+    selected = queuebox.selection_get()
+    queue.remove(selected)
+    queuebox.delete(dex)
+    print(queue)
+
+def clear_q():
+    global queue
+    queue = []
+    queuebox.delete(0, END)
+
+
+# Controls Frame
+controls_frame = Frame(boxes)
+controls_frame.grid(row=1, column=2, sticky=W + E)
+
+Button(controls_frame, command=add2queue, text="Add").grid(row=1, padx=3)
+Button(controls_frame, command=remove_from_q, text="Remove").grid(row=2, padx=3)
+Button(controls_frame, command=clear_q, text="Clear").grid(row=3, padx=3)
 Button(search_bar, command=search_check, text="Search").grid(row=0, sticky=W, column=5)
 
 # Frame ser_type
@@ -95,10 +136,6 @@ mov_ser.grid(row=0, sticky=W, column=3)
 car_ser.grid(row=0, sticky=W, column=4)
 all_ser.invoke()
 
-controls = Frame(boxes)
-controls.grid(row=1, column=6, sticky=W)
-# TODO make and assign commands to add/remove buttons
-Button(controls, text="Add").grid(row=1, padx=3)
-Button(controls, text="Remove").grid(row=2, padx=3)
+
 
 mainloop()
