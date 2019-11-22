@@ -33,7 +33,6 @@ searchbox.focus_set()
 searchbox.grid(row=0, sticky=W, padx=3)
 
 # Listboxes
-# TODO add scroll bars to listboxs
 boxes = Frame(root)
 boxes.grid(row=2, sticky=N + W + E)
 # TODO get resizing working
@@ -97,13 +96,24 @@ def add2queue():
     queue.append(selected)
     queuebox.insert(END, selected)
 
+# TODO not work right is not see it as a list
+def get_url():
+    global main_dic, queue
+    results = []
+    key = queue
+    if key is list:
+        for title in key:
+            results.append(main_dic[title])
+    else:
+        results.append(main_dic[key])
+    print(results)
+
 def remove_from_q():
     global queue
     dex = queuebox.curselection()
     selected = queuebox.selection_get()
     queue.remove(selected)
     queuebox.delete(dex)
-    print(queue)
 
 def clear_q():
     global queue
@@ -119,6 +129,8 @@ Button(controls_frame, command=add2queue, text="Add").grid(row=1, padx=3)
 Button(controls_frame, command=remove_from_q, text="Remove").grid(row=2, padx=3)
 Button(controls_frame, command=clear_q, text="Clear").grid(row=3, padx=3)
 Button(search_bar, command=search_check, text="Search").grid(row=0, sticky=W, column=5)
+Button(controls_frame, command=get_url, text="Get URLs").grid(row=4, padx=3)
+
 
 # Frame ser_type
 ser_type = Frame(root)

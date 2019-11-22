@@ -15,8 +15,22 @@ from bs4 import BeautifulSoup
 **"source_finder": finds video source link and returns it
 **"grab_episodes": gets episodes source link(value) and title(key) and return them as dictionary
 '''
+# TODO needs threading
+
+# Crawls show url for the link of each episode, returns episode title(key) and episode link(value) as dictionary
+def eps_napper(url):
+    episodes = {}
+    html = requests.get(url)
+    plain_text = html.text
+    soup = BeautifulSoup(plain_text, 'html5lib')
+    for ep in soup.find_all("a", {"class": "sonra"}):
+        title = ep.get("title")
+        href = ep.get("href")
+        episodes[str(title)] = str(href)
+    return episodes
 
 
+# TODO Need to add eps_napper to dub, sub, and cartoon crawlers need to use nested dicts
 # Crawls watchcartoononline's dub anime list, returns title(key) and link(value) as dictionary
 def dub_anime_crawl():
     animes = {}
@@ -81,7 +95,6 @@ def cartoon_crawl():
     return cartoons
 
 
-# TODO needs threading
 def source_finder(url):
     # Creating headless firefox browser
     ops = Options()
@@ -115,15 +128,3 @@ def source_finder(url):
     print(link)
     return link
 
-
-# Crawls show url for the link of each episode, returns episode title(key) and episode link(value) as dictionary
-def eps_napper(url):
-    episodes = {}
-    html = requests.get(url)
-    plain_text = html.text
-    soup = BeautifulSoup(plain_text, 'html5lib')
-    for ep in soup.find_all("a", {"class": "sonra"}):
-        title = ep.get("title")
-        href = ep.get("href")
-        episodes[str(title)] = str(href)
-    return episodes

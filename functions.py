@@ -6,7 +6,9 @@ dubbed = {}
 subbed = {}
 movies = {}
 cartoons = {}
+main_dic = {}
 category = ""
+dups = []
 all_sear = False
 dub_sear = False
 sub_sear = False
@@ -31,23 +33,6 @@ def search_type(typ):
         mov_sear = True
     if typ == 5:
         cart_sear = True
-
-
-# Crawls all categories and returns them to global dictionaries
-def startup():
-    global dubbed, subbed, movies, cartoons
-    dubbed = dub_anime_crawl()
-    subbed = sub_anime_crawl()
-    movies = movie_crawl()
-    cartoons = cartoon_crawl()
-
-
-### ------ !!!FOR TESTING ONLY!!! ------ ###
-def movie_get():
-    global movies
-    movies = movie_crawl()
-### ------ !!!FOR TESTING ONLY!!! ------ ###
-
 
 # Returns list sorted by relevance
 def relevance_sort(keyword, lis):
@@ -88,7 +73,7 @@ def dic_2_list(dic):
 # Searches thur dubbed anime category
 def search_dub(criteria):
     global category
-    category = "dubbed anime"
+    category = "dubbed"
     search_list = dic_2_list(dubbed)
     results = search(search_list, criteria)
     return results
@@ -97,7 +82,7 @@ def search_dub(criteria):
 # Searches thur subbed anime category
 def search_sub(criteria):
     global category
-    category = "subbed anime"
+    category = "subbed"
     search_list = dic_2_list(subbed)
     results = search(search_list, criteria)
     return results
@@ -130,24 +115,39 @@ def search_all(criteria):
     results.extend(search_movies(criteria))
     return results
 
+# Takes dup keys in movies and adds "(Movie)" to the end of key
+def dup_decoder():
+    global movies
+    for title in dups:
+        dup_title = title
+        for mov_title in movies:
+            if mov_title == dup_title:
+                new_key = f'{mov_title} (Movie)'
+                movies[new_key] = movies.pop(mov_title)
 
+# Finds all dup key "title" in movies
+def dup_find():
+    global dups
+    diclis = [dubbed, subbed, cartoons]
+    for dic in diclis:
+        for key1 in dic.keys():
+            for key2 in movies.keys():
+                if key1 == key2:
+                    dups.append(key1)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Crawls all categories and returns them to global dictionaries
+def startup():
+    global dubbed, subbed, movies, cartoons, dups, main_dic
+    dubbed = dub_anime_crawl()
+    subbed = sub_anime_crawl()
+    movies = movie_crawl()
+    cartoons = cartoon_crawl()
+    dup_find()
+    dup_decoder()
+    main_dic.update(dubbed)
+    main_dic.update(subbed)
+    main_dic.update(movies)
+    main_dic.update(cartoons)
+    
 
 
