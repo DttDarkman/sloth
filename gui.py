@@ -3,11 +3,9 @@ from tkinter.ttk import *
 from functions import *
 import functions
 
-### ------ !!!FOR TESTING ONLY!!! ------ ###
 startup()
-# matches = search_movies("summer")
-# results = relevance_sort("summer", matches)
-### ------ !!!FOR TESTING ONLY!!! ------ ###
+
+
 results = []
 queue = []
 
